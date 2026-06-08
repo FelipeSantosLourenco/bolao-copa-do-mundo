@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build --prefix frontend",
+  "devCommand": "npm run dev --prefix frontend",
+  "outputDirectory": "frontend/dist",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/((?!api/|node_modules/|@|.*\\.[a-zA-Z0-9]+$).*)", "destination": "/index.html" }
+  ],
+  "crons": [
+    {
+      "path": "/api/admin/update-matches?secret=14e7aa398cca7426c8b96aa5df14e93ee62987ca91b5d641821363e8ba007149&sync=true",
+      "schedule": "*/30 * * * *"
+    }
+  ]
+}
