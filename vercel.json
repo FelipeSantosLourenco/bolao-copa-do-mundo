@@ -11,7 +11,7 @@
   "crons": [
     {
       "path": "/api/admin/update-matches?secret=14e7aa398cca7426c8b96aa5df14e93ee62987ca91b5d641821363e8ba007149&sync=true",
-      "schedule": "*/30 * * * *"
+      "schedule": "0 6 * * *"
     }
   ]
 }
