@@ -263,22 +263,74 @@ export default function Bets() {
                   }
                 }
 
-                // Emojis de bandeiras simulados
-                const getFlag = (team) => {
-                  if (team === 'Brasil') return '🇧🇷';
-                  if (team === 'Argentina') return '🇦🇷';
-                  if (team === 'Sérvia') return '🇷🇸';
-                  if (team === 'Arábia Saudita') return '🇸🇦';
-                  if (team === 'França') return '🇫🇷';
-                  if (team === 'Austrália') return '🇦🇺';
-                  if (team === 'Espanha') return '🇪🇸';
-                  if (team === 'Costa Rica') return '🇨🇷';
-                  if (team === 'Alemanha') return '🇩🇪';
-                  if (team === 'Japão') return '🇯🇵';
-                  if (team === 'Portugal') return '🇵🇹';
-                  if (team === 'Gana') return '🇬🇭';
-                  if (team === 'Suíça') return '🇨🇭';
-                  return '🏳️';
+                // Mapeamento de códigos de bandeiras para flagcdn
+                const TEAM_FLAGS = {
+                  'Brasil': 'br',
+                  'Argentina': 'ar',
+                  'Sérvia': 'rs',
+                  'Arábia Saudita': 'sa',
+                  'França': 'fr',
+                  'Austrália': 'au',
+                  'Espanha': 'es',
+                  'Costa Rica': 'cr',
+                  'Alemanha': 'de',
+                  'Japão': 'jp',
+                  'Portugal': 'pt',
+                  'Gana': 'gh',
+                  'Suíça': 'ch',
+                  'Camarões': 'cm',
+                  'Uruguai': 'uy',
+                  'Coreia do Sul': 'kr',
+                  'Inglaterra': 'gb-eng',
+                  'Irã': 'ir',
+                  'País de Gales': 'gb-wls',
+                  'Senegal': 'sn',
+                  'Holanda': 'nl',
+                  'Catar': 'qa',
+                  'Equador': 'ec',
+                  'EUA': 'us',
+                  'Estados Unidos': 'us',
+                  'Croácia': 'hr',
+                  'Marrocos': 'ma',
+                  'Bélgica': 'be',
+                  'Canadá': 'ca',
+                  'Polônia': 'pl',
+                  'México': 'mx',
+                  'Dinamarca': 'dk',
+                  'Tunísia': 'tn',
+                  'Itália': 'it',
+                  'Suécia': 'se',
+                  'Colômbia': 'co',
+                  'Peru': 'pe',
+                  'Panamá': 'pa',
+                  'Nigéria': 'ng',
+                  'Egito': 'eg',
+                  'Islândia': 'is',
+                  'Ucrânia': 'ua',
+                  'Turquia': 'tr',
+                  'Paraguai': 'py',
+                  'Chile': 'cl',
+                  'Bolívia': 'bo',
+                  'Venezuela': 've',
+                  'Argélia': 'dz',
+                  'Costa do Marfim': 'ci',
+                  'África do Sul': 'za',
+                  'Escócia': 'gb-sct',
+                  'Irlanda': 'ie',
+                  'Áustria': 'at',
+                  'RD Congo': 'cd',
+                  'Uzbequistão': 'uz',
+                  'Jordânia': 'jo',
+                  'Cabo Verde': 'cv',
+                  'Ilhas de Cabo Verde': 'cv'
+                };
+
+                const getFlagUrl = (team) => {
+                  const code = TEAM_FLAGS[team];
+                  if (code) {
+                    return `https://flagcdn.com/w80/${code}.png`;
+                  }
+                  return 'https://flagcdn.com/w80/un.png'; // Fallback ONU
                 };
 
                 return (
@@ -296,14 +348,24 @@ export default function Bets() {
 
                     <div className="match-teams-wrapper">
                       <div className="team-display">
-                        <span className="team-flag-mock">{getFlag(match.team_a)}</span>
+                        <img 
+                          src={getFlagUrl(match.team_a)} 
+                          alt={match.team_a}
+                          className="team-flag-mock" 
+                          style={{ objectFit: 'cover', padding: 0 }}
+                        />
                         <span className="team-name">{match.team_a}</span>
                       </div>
                       
                       <span className="match-vs">VS</span>
                       
                       <div className="team-display">
-                        <span className="team-flag-mock">{getFlag(match.team_b)}</span>
+                        <img 
+                          src={getFlagUrl(match.team_b)} 
+                          alt={match.team_b}
+                          className="team-flag-mock" 
+                          style={{ objectFit: 'cover', padding: 0 }}
+                        />
                         <span className="team-name">{match.team_b}</span>
                       </div>
                     </div>
