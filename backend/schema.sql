@@ -20,7 +20,9 @@ CREATE TABLE IF NOT EXISTS matches (
   match_date_time TIMESTAMP WITH TIME ZONE NOT NULL,
   real_score_a INT DEFAULT NULL,
   real_score_b INT DEFAULT NULL,
-  status VARCHAR(20) DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'finished'))
+  status VARCHAR(20) DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'finished')),
+  team_a_crest VARCHAR(255) DEFAULT NULL,
+  team_b_crest VARCHAR(255) DEFAULT NULL
 );
 
 -- Tabela de Palpites

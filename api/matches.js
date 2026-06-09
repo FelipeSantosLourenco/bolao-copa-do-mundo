@@ -31,6 +31,8 @@ export default async function handler(req, res) {
         m.real_score_a,
         m.real_score_b,
         m.status,
+        m.team_a_crest,
+        m.team_b_crest,
         b.bet_score_a,
         b.bet_score_b,
         b.points_earned

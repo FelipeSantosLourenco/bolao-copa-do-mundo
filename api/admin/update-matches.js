@@ -104,56 +104,56 @@ export default async function handler(req, res) {
         apiMatches = [
           {
             id: 101,
-            homeTeam: { name: 'Brazil' },
-            awayTeam: { name: 'Serbia' },
+            homeTeam: { name: 'Brazil', crest: 'https://flagcdn.com/w80/br.png' },
+            awayTeam: { name: 'Serbia', crest: 'https://flagcdn.com/w80/rs.png' },
             utcDate: '2026-06-05T15:00:00Z',
             status: 'FINISHED',
             score: { fullTime: { home: 2, away: 0 } }
           },
           {
             id: 102,
-            homeTeam: { name: 'Argentina' },
-            awayTeam: { name: 'Saudi Arabia' },
+            homeTeam: { name: 'Argentina', crest: 'https://flagcdn.com/w80/ar.png' },
+            awayTeam: { name: 'Saudi Arabia', crest: 'https://flagcdn.com/w80/sa.png' },
             utcDate: '2026-06-06T10:00:00Z',
             status: 'FINISHED',
             score: { fullTime: { home: 1, away: 2 } }
           },
           {
             id: 103,
-            homeTeam: { name: 'France' },
-            awayTeam: { name: 'Australia' },
+            homeTeam: { name: 'France', crest: 'https://flagcdn.com/w80/fr.png' },
+            awayTeam: { name: 'Australia', crest: 'https://flagcdn.com/w80/au.png' },
             utcDate: '2026-06-07T19:00:00Z',
             status: 'FINISHED',
             score: { fullTime: { home: 4, away: 1 } }
           },
           {
             id: 104,
-            homeTeam: { name: 'Spain' },
-            awayTeam: { name: 'Costa Rica' },
+            homeTeam: { name: 'Spain', crest: 'https://flagcdn.com/w80/es.png' },
+            awayTeam: { name: 'Costa Rica', crest: 'https://flagcdn.com/w80/cr.png' },
             utcDate: '2026-06-08T16:00:00Z',
             status: 'FINISHED', // Simulação: Jogo da Espanha terminou agora
             score: { fullTime: { home: 3, away: 0 } }
           },
           {
             id: 105,
-            homeTeam: { name: 'Germany' },
-            awayTeam: { name: 'Japan' },
+            homeTeam: { name: 'Germany', crest: 'https://flagcdn.com/w80/de.png' },
+            awayTeam: { name: 'Japan', crest: 'https://flagcdn.com/w80/jp.png' },
             utcDate: '2026-06-08T19:00:00Z',
             status: 'SCHEDULED',
             score: { fullTime: { home: null, away: null } }
           },
           {
             id: 106,
-            homeTeam: { name: 'Portugal' },
-            awayTeam: { name: 'Ghana' },
+            homeTeam: { name: 'Portugal', crest: 'https://flagcdn.com/w80/pt.png' },
+            awayTeam: { name: 'Ghana', crest: 'https://flagcdn.com/w80/gh.png' },
             utcDate: '2026-06-09T16:00:00Z',
             status: 'SCHEDULED',
             score: { fullTime: { home: null, away: null } }
           },
           {
             id: 107,
-            homeTeam: { name: 'Brazil' },
-            awayTeam: { name: 'Switzerland' },
+            homeTeam: { name: 'Brazil', crest: 'https://flagcdn.com/w80/br.png' },
+            awayTeam: { name: 'Switzerland', crest: 'https://flagcdn.com/w80/ch.png' },
             utcDate: '2026-06-12T16:00:00Z',
             status: 'SCHEDULED',
             score: { fullTime: { home: null, away: null } }
@@ -195,17 +195,23 @@ export default async function handler(req, res) {
         const scoreA = isFinished ? apiMatch.score.fullTime.home : null;
         const scoreB = isFinished ? apiMatch.score.fullTime.away : null;
 
-        // Upsert do jogo baseado no external_id
+        // Links de imagens das bandeiras oficiais retornados pela API
+        const teamACrest = apiMatch.homeTeam?.crest || null;
+        const teamBCrest = apiMatch.awayTeam?.crest || null;
+
+        // Upsert do jogo baseado no external_id incluindo os escudos
         const upsertQuery = `
-          INSERT INTO matches (external_id, team_a, team_b, match_date_time, real_score_a, real_score_b, status)
-          VALUES ($1, $2, $3, $4, $5, $6, $7)
+          INSERT INTO matches (external_id, team_a, team_b, match_date_time, real_score_a, real_score_b, status, team_a_crest, team_b_crest)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
           ON CONFLICT (external_id)
           DO UPDATE SET
             team_a = EXCLUDED.team_a,
             team_b = EXCLUDED.team_b,
             real_score_a = EXCLUDED.real_score_a,
             real_score_b = EXCLUDED.real_score_b,
-            status = EXCLUDED.status
+            status = EXCLUDED.status,
+            team_a_crest = EXCLUDED.team_a_crest,
+            team_b_crest = EXCLUDED.team_b_crest
           RETURNING id, status, real_score_a, real_score_b
         `;
 
@@ -216,7 +222,9 @@ export default async function handler(req, res) {
           matchDateTime,
           scoreA,
           scoreB,
-          dbStatus
+          dbStatus,
+          teamACrest,
+          teamBCrest
         ]);
 
         const dbMatch = result.rows[0];

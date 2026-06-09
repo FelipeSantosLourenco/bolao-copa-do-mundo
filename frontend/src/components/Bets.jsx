@@ -263,135 +263,6 @@ export default function Bets() {
                   }
                 }
 
-                // Mapeamento defensivo de códigos de bandeiras (Português + Inglês de Fallback)
-                const TEAM_FLAGS = {
-                  // Português
-                  'Brasil': 'br',
-                  'Argentina': 'ar',
-                  'Sérvia': 'rs',
-                  'Arábia Saudita': 'sa',
-                  'França': 'fr',
-                  'Austrália': 'au',
-                  'Espanha': 'es',
-                  'Costa Rica': 'cr',
-                  'Alemanha': 'de',
-                  'Japão': 'jp',
-                  'Portugal': 'pt',
-                  'Gana': 'gh',
-                  'Suíça': 'ch',
-                  'Camarões': 'cm',
-                  'Uruguai': 'uy',
-                  'Coreia do Sul': 'kr',
-                  'Inglaterra': 'gb-eng',
-                  'Irã': 'ir',
-                  'País de Gales': 'gb-wls',
-                  'Senegal': 'sn',
-                  'Holanda': 'nl',
-                  'Países Baixos': 'nl',
-                  'Catar': 'qa',
-                  'Equador': 'ec',
-                  'EUA': 'us',
-                  'Estados Unidos': 'us',
-                  'Croácia': 'hr',
-                  'Marrocos': 'ma',
-                  'Bélgica': 'be',
-                  'Canadá': 'ca',
-                  'Polônia': 'pl',
-                  'México': 'mx',
-                  'Dinamarca': 'dk',
-                  'Tunísia': 'tn',
-                  'Itália': 'it',
-                  'Suécia': 'se',
-                  'Colômbia': 'co',
-                  'Peru': 'pe',
-                  'Panamá': 'pa',
-                  'Nigéria': 'ng',
-                  'Egito': 'eg',
-                  'Islândia': 'is',
-                  'Ucrânia': 'ua',
-                  'Turquia': 'tr',
-                  'Paraguai': 'py',
-                  'Chile': 'cl',
-                  'Bolívia': 'bo',
-                  'Venezuela': 've',
-                  'Argélia': 'dz',
-                  'Costa do Marfim': 'ci',
-                  'África do Sul': 'za',
-                  'Escócia': 'gb-sct',
-                  'Irlanda': 'ie',
-                  'Áustria': 'at',
-                  'RD Congo': 'cd',
-                  'Uzbequistão': 'uz',
-                  'Jordânia': 'jo',
-                  'Cabo Verde': 'cv',
-                  'Ilhas de Cabo Verde': 'cv',
-
-                  // Inglês (Caso algum registro no banco ainda esteja em inglês)
-                  'Brazil': 'br',
-                  'Serbia': 'rs',
-                  'Saudi Arabia': 'sa',
-                  'France': 'fr',
-                  'Australia': 'au',
-                  'Spain': 'es',
-                  'Germany': 'de',
-                  'Japan': 'jp',
-                  'Ghana': 'gh',
-                  'Switzerland': 'ch',
-                  'Cameroon': 'cm',
-                  'Uruguay': 'uy',
-                  'South Korea': 'kr',
-                  'England': 'gb-eng',
-                  'Iran': 'ir',
-                  'Wales': 'gb-wls',
-                  'Netherlands': 'nl',
-                  'Qatar': 'qa',
-                  'Ecuador': 'ec',
-                  'USA': 'us',
-                  'United States': 'us',
-                  'Croatia': 'hr',
-                  'Morocco': 'ma',
-                  'Belgium': 'be',
-                  'Canada': 'ca',
-                  'Poland': 'pl',
-                  'Mexico': 'mx',
-                  'Denmark': 'dk',
-                  'Tunisia': 'tn',
-                  'Italy': 'it',
-                  'Sweden': 'se',
-                  'Colombia': 'co',
-                  'Peru': 'pe',
-                  'Panama': 'pa',
-                  'Nigeria': 'ng',
-                  'Egypt': 'eg',
-                  'Iceland': 'is',
-                  'Ukraine': 'ua',
-                  'Turkey': 'tr',
-                  'Paraguay': 'py',
-                  'Chile': 'cl',
-                  'Bolivia': 'bo',
-                  'Venezuela': 've',
-                  'Algeria': 'dz',
-                  'Ivory Coast': 'ci',
-                  "Côte d'Ivoire": 'ci',
-                  'South Africa': 'za',
-                  'Scotland': 'gb-sct',
-                  'Ireland': 'ie',
-                  'Austria': 'at',
-                  'Congo DR': 'cd',
-                  'DR Congo': 'cd',
-                  'Uzbekistan': 'uz',
-                  'Jordan': 'jo',
-                  'Cape Verde': 'cv'
-                };
-
-                const getFlagUrl = (team) => {
-                  const code = TEAM_FLAGS[team];
-                  if (code) {
-                    return `https://flagcdn.com/w80/${code}.png`;
-                  }
-                  return 'https://flagcdn.com/w80/un.png'; // Fallback ONU
-                };
-
                 return (
                   <div key={match.id} className={`glass-card match-card ${statusInfo.class}`}>
                     <div className="match-info-top">
@@ -408,7 +279,7 @@ export default function Bets() {
                     <div className="match-teams-wrapper">
                       <div className="team-display">
                         <img 
-                          src={getFlagUrl(match.team_a)} 
+                          src={match.team_a_crest || 'https://flagcdn.com/w80/un.png'} 
                           alt={match.team_a}
                           className="team-flag-mock" 
                           style={{ objectFit: 'cover', padding: 0 }}
@@ -420,7 +291,7 @@ export default function Bets() {
                       
                       <div className="team-display">
                         <img 
-                          src={getFlagUrl(match.team_b)} 
+                          src={match.team_b_crest || 'https://flagcdn.com/w80/un.png'} 
                           alt={match.team_b}
                           className="team-flag-mock" 
                           style={{ objectFit: 'cover', padding: 0 }}
