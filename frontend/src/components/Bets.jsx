@@ -263,8 +263,9 @@ export default function Bets() {
                   }
                 }
 
-                // Mapeamento de códigos de bandeiras para flagcdn
+                // Mapeamento defensivo de códigos de bandeiras (Português + Inglês de Fallback)
                 const TEAM_FLAGS = {
+                  // Português
                   'Brasil': 'br',
                   'Argentina': 'ar',
                   'Sérvia': 'rs',
@@ -286,6 +287,7 @@ export default function Bets() {
                   'País de Gales': 'gb-wls',
                   'Senegal': 'sn',
                   'Holanda': 'nl',
+                  'Países Baixos': 'nl',
                   'Catar': 'qa',
                   'Equador': 'ec',
                   'EUA': 'us',
@@ -322,7 +324,64 @@ export default function Bets() {
                   'Uzbequistão': 'uz',
                   'Jordânia': 'jo',
                   'Cabo Verde': 'cv',
-                  'Ilhas de Cabo Verde': 'cv'
+                  'Ilhas de Cabo Verde': 'cv',
+
+                  // Inglês (Caso algum registro no banco ainda esteja em inglês)
+                  'Brazil': 'br',
+                  'Serbia': 'rs',
+                  'Saudi Arabia': 'sa',
+                  'France': 'fr',
+                  'Australia': 'au',
+                  'Spain': 'es',
+                  'Germany': 'de',
+                  'Japan': 'jp',
+                  'Ghana': 'gh',
+                  'Switzerland': 'ch',
+                  'Cameroon': 'cm',
+                  'Uruguay': 'uy',
+                  'South Korea': 'kr',
+                  'England': 'gb-eng',
+                  'Iran': 'ir',
+                  'Wales': 'gb-wls',
+                  'Netherlands': 'nl',
+                  'Qatar': 'qa',
+                  'Ecuador': 'ec',
+                  'USA': 'us',
+                  'United States': 'us',
+                  'Croatia': 'hr',
+                  'Morocco': 'ma',
+                  'Belgium': 'be',
+                  'Canada': 'ca',
+                  'Poland': 'pl',
+                  'Mexico': 'mx',
+                  'Denmark': 'dk',
+                  'Tunisia': 'tn',
+                  'Italy': 'it',
+                  'Sweden': 'se',
+                  'Colombia': 'co',
+                  'Peru': 'pe',
+                  'Panama': 'pa',
+                  'Nigeria': 'ng',
+                  'Egypt': 'eg',
+                  'Iceland': 'is',
+                  'Ukraine': 'ua',
+                  'Turkey': 'tr',
+                  'Paraguay': 'py',
+                  'Chile': 'cl',
+                  'Bolivia': 'bo',
+                  'Venezuela': 've',
+                  'Algeria': 'dz',
+                  'Ivory Coast': 'ci',
+                  "Côte d'Ivoire": 'ci',
+                  'South Africa': 'za',
+                  'Scotland': 'gb-sct',
+                  'Ireland': 'ie',
+                  'Austria': 'at',
+                  'Congo DR': 'cd',
+                  'DR Congo': 'cd',
+                  'Uzbekistan': 'uz',
+                  'Jordan': 'jo',
+                  'Cape Verde': 'cv'
                 };
 
                 const getFlagUrl = (team) => {
