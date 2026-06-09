@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Calendar, Clock, Lock, Check, AlertCircle, Save } from 'lucide-react';
+import { Calendar, Clock, Lock, Check, AlertCircle, Save, Copy } from 'lucide-react';
 
 export default function Bets() {
   const { authenticatedFetch } = useAuth();
@@ -13,6 +13,32 @@ export default function Bets() {
   const [editedBets, setEditedBets] = useState({});
   const [savingId, setSavingId] = useState(null); // ID do jogo sendo salvo
   const [successMessages, setSuccessMessages] = useState({}); // ID -> mensagem de sucesso temporária
+  const [copiedDate, setCopiedDate] = useState(null); // Data atualmente copiada para clipboard
+
+  const handleExportBets = (dateStr, matchesList) => {
+    const lines = [];
+    lines.push(`📅 Palpites para ${dateStr}:`);
+    
+    matchesList.forEach(match => {
+      const currentBet = editedBets[match.id] || {};
+      // Usa o que está na tela (digitado) ou o que está salvo no banco
+      const scoreA = currentBet.scoreA !== '' ? currentBet.scoreA : (match.bet_score_a !== null ? match.bet_score_a : '_');
+      const scoreB = currentBet.scoreB !== '' ? currentBet.scoreB : (match.bet_score_b !== null ? match.bet_score_b : '_');
+      lines.push(`${match.team_a} ${scoreA} x ${scoreB} ${match.team_b}`);
+    });
+    
+    const textToCopy = lines.join('\n');
+    
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => {
+        setCopiedDate(dateStr);
+        setTimeout(() => setCopiedDate(null), 2000);
+      })
+      .catch(err => {
+        console.error('Erro ao copiar palpites:', err);
+        alert('Erro ao copiar os palpites para a área de transferência.');
+      });
+  };
 
   const fetchMatches = async () => {
     try {
@@ -184,9 +210,37 @@ export default function Bets() {
       ) : (
         Object.entries(groupedMatches).map(([dateStr, matchesList]) => (
           <div key={dateStr} className="date-group">
-            <h3 className="date-header">
-              <Calendar size={18} />
-              {dateStr}
+            <h3 className="date-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Calendar size={18} />
+                {dateStr}
+              </span>
+              <button
+                type="button"
+                onClick={() => handleExportBets(dateStr, matchesList)}
+                className="btn btn-secondary"
+                style={{
+                  width: 'auto',
+                  height: 'auto',
+                  padding: '0.3rem 0.75rem',
+                  fontSize: '0.8rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  marginTop: 0
+                }}
+                title="Copiar palpites deste dia"
+              >
+                {copiedDate === dateStr ? (
+                  <>
+                    <Check size={14} style={{ color: 'var(--success)' }} /> Copiado!
+                  </>
+                ) : (
+                  <>
+                    <Copy size={14} /> Copiar Palpites
+                  </>
+                )}
+              </button>
             </h3>
             
             <div className="matches-grid">
