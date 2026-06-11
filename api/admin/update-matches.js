@@ -160,8 +160,8 @@ export default async function handler(req, res) {
           }
         ];
       } else {
-        // Fetch real do football-data.org
-        const response = await fetch('http://api.football-data.org/v4/competitions/WC/matches', {
+        // Fetch real do football-data.org (usando HTTPS para evitar redirecionamento 301)
+        const response = await fetch('https://api.football-data.org/v4/competitions/WC/matches', {
           headers: { 'X-Auth-Token': apiToken }
         });
         if (!response.ok) {
