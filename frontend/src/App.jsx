@@ -4,7 +4,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Bets from './components/Bets';
-import { Trophy, Calendar, LogOut, User } from 'lucide-react';
+import Predictions from './components/Predictions';
+import { Trophy, Calendar, LogOut, User, Users } from 'lucide-react';
 import './App.css';
 
 // Componente para renderizar a Navbar apenas se o usuário estiver logado
@@ -31,6 +32,12 @@ function Navigation() {
           className={`nav-link ${location.pathname === '/palpites' ? 'active' : ''}`}
         >
           <Calendar size={16} /> Meus Palpites
+        </Link>
+        <Link 
+          to="/todos-palpites" 
+          className={`nav-link ${location.pathname === '/todos-palpites' ? 'active' : ''}`}
+        >
+          <Users size={16} /> Palpites da Galera
         </Link>
       </div>
       <div className="nav-user">
@@ -82,6 +89,10 @@ function AppContent() {
           <Route 
             path="/palpites" 
             element={user ? <Bets /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/todos-palpites" 
+            element={user ? <Predictions /> : <Navigate to="/login" replace />} 
           />
 
           {/* Fallback de rotas */}
