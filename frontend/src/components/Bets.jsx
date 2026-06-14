@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Calendar, Clock, Lock, Check, AlertCircle, Save, Copy } from 'lucide-react';
 
@@ -7,7 +7,10 @@ export default function Bets() {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
+  // Ref para controlar se o scroll inicial já foi realizado
+  const hasScrolledRef = useRef(false);
+
   // Mantém os placares editados pelo usuário localmente antes de salvar
   // Estrutura: { [matchId]: { scoreA: '2', scoreB: '1' } }
   const [editedBets, setEditedBets] = useState({});
@@ -18,7 +21,7 @@ export default function Bets() {
   const handleExportBets = (dateStr, matchesList) => {
     const lines = [];
     lines.push(`📅 Palpites para ${dateStr}:`);
-    
+
     matchesList.forEach(match => {
       const currentBet = editedBets[match.id] || {};
       // Usa o que está na tela (digitado) ou o que está salvo no banco
@@ -26,9 +29,9 @@ export default function Bets() {
       const scoreB = currentBet.scoreB !== '' ? currentBet.scoreB : (match.bet_score_b !== null ? match.bet_score_b : '_');
       lines.push(`${match.team_a} ${scoreA} x ${scoreB} ${match.team_b}`);
     });
-    
+
     const textToCopy = lines.join('\n');
-    
+
     navigator.clipboard.writeText(textToCopy)
       .then(() => {
         setCopiedDate(dateStr);
@@ -48,7 +51,7 @@ export default function Bets() {
       }
       const data = await response.json();
       setMatches(data);
-      
+
       // Inicializa os inputs com as apostas existentes
       const initialBets = {};
       data.forEach(match => {
@@ -71,10 +74,11 @@ export default function Bets() {
   }, []);
 
   useEffect(() => {
-    if (!loading && matches.length > 0) {
+    if (!loading && matches.length > 0 && !hasScrolledRef.current) {
       // Encontra a primeira partida que não está finalizada
       const firstUpcoming = matches.find(m => m.status === 'scheduled');
       if (firstUpcoming) {
+        hasScrolledRef.current = true;
         const date = new Date(firstUpcoming.match_date_time);
         const dateKey = date.toLocaleDateString('pt-BR', {
           weekday: 'long',
@@ -83,7 +87,7 @@ export default function Bets() {
           year: 'numeric'
         });
         const formattedDate = dateKey.charAt(0).toUpperCase() + dateKey.slice(1);
-        
+
         // Timeout pequeno para garantir renderização do DOM
         const timer = setTimeout(() => {
           const element = document.getElementById(`date-group-${formattedDate}`);
@@ -99,7 +103,7 @@ export default function Bets() {
   const handleInputChange = (matchId, team, value) => {
     // Apenas permite números
     if (value !== '' && !/^\d+$/.test(value)) return;
-    
+
     setEditedBets(prev => ({
       ...prev,
       [matchId]: {
@@ -112,7 +116,7 @@ export default function Bets() {
   const handleSaveBet = async (matchId) => {
     setError('');
     const bet = editedBets[matchId];
-    
+
     if (bet.scoreA === '' || bet.scoreB === '') {
       setError('Por favor, insira o placar para ambos os times antes de salvar.');
       return;
@@ -163,15 +167,15 @@ export default function Bets() {
   // Verifica se o jogo está trancado para palpites (menos de 30 minutos para começar ou finalizado)
   const getLockStatus = (match) => {
     if (match.status === 'finished') return { locked: true, label: 'Finalizado', class: 'finished' };
-    
+
     const matchTime = new Date(match.match_date_time).getTime();
     const limitTime = matchTime - (30 * 60 * 1000); // 30 minutos em milissegundos
     const isPastLimit = Date.now() >= limitTime;
-    
+
     if (isPastLimit) {
       return { locked: true, label: 'Bloqueado (Jogo Iniciando)', class: 'locked' };
     }
-    
+
     return { locked: false, label: 'Aberto para Palpite', class: 'scheduled' };
   };
 
@@ -268,7 +272,7 @@ export default function Bets() {
                 )}
               </button>
             </h3>
-            
+
             <div className="matches-grid">
               {matchesList.map((match) => {
                 const statusInfo = getLockStatus(match);
@@ -304,22 +308,22 @@ export default function Bets() {
 
                     <div className="match-teams-wrapper">
                       <div className="team-display">
-                        <img 
-                          src={match.team_a_crest || 'https://flagcdn.com/w80/un.png'} 
+                        <img
+                          src={match.team_a_crest || 'https://flagcdn.com/w80/un.png'}
                           alt={match.team_a}
-                          className="team-flag-mock" 
+                          className="team-flag-mock"
                           style={{ objectFit: 'cover', padding: 0 }}
                         />
                         <span className="team-name">{match.team_a}</span>
                       </div>
-                      
+
                       <span className="match-vs">VS</span>
-                      
+
                       <div className="team-display">
-                        <img 
-                          src={match.team_b_crest || 'https://flagcdn.com/w80/un.png'} 
+                        <img
+                          src={match.team_b_crest || 'https://flagcdn.com/w80/un.png'}
                           alt={match.team_b}
-                          className="team-flag-mock" 
+                          className="team-flag-mock"
                           style={{ objectFit: 'cover', padding: 0 }}
                         />
                         <span className="team-name">{match.team_b}</span>
@@ -334,7 +338,7 @@ export default function Bets() {
 
                     <div className="bet-inputs-section">
                       <p className="bet-label-text">Seu Palpite</p>
-                      
+
                       <div className="bet-inputs-row">
                         <input
                           type="text"

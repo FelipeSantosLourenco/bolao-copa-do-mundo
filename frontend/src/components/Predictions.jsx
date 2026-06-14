@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Users, Clock, Lock, Check, AlertCircle, Calendar } from 'lucide-react';
 
@@ -7,6 +7,9 @@ export default function Predictions() {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Ref para controlar se o scroll inicial já foi realizado nesta sessão da tela
+  const hasScrolledRef = useRef(false);
 
   const fetchPredictions = async () => {
     try {
@@ -28,18 +31,16 @@ export default function Predictions() {
     fetchPredictions();
   }, []);
 
-  // Executa o scroll automático para o ÚLTIMO jogo que já começou
+  // Executa o scroll automático para o ÚLTIMO jogo que já começou (ou está bloqueado)
   useEffect(() => {
-    if (!loading && matches.length > 0) {
-      // Procura o último jogo que já começou (de trás para frente)
-      const reversedIndex = [...matches].reverse().findIndex(m => {
-        const matchTime = new Date(m.matchDateTime).getTime();
-        return m.status === 'finished' || Date.now() >= matchTime;
-      });
+    if (!loading && matches.length > 0 && !hasScrolledRef.current) {
+      // Procura o último jogo que já começou/está bloqueado (de trás para frente)
+      const reversedIndex = [...matches].reverse().findIndex(m => m.isLocked);
 
       const lastStartedIndex = reversedIndex !== -1 ? (matches.length - 1 - reversedIndex) : -1;
 
       if (lastStartedIndex !== -1) {
+        hasScrolledRef.current = true;
         const targetMatch = matches[lastStartedIndex];
         // Timeout pequeno para dar tempo do DOM renderizar
         const timer = setTimeout(() => {
@@ -117,9 +118,9 @@ export default function Predictions() {
             }
 
             return (
-              <div 
-                key={match.id} 
-                id={`match-card-${match.id}`} 
+              <div
+                key={match.id}
+                id={`match-card-${match.id}`}
                 className={`glass-card prediction-match-card ${statusClass}`}
                 style={{ scrollMargin: '100px', transition: 'all 0.5s ease' }}
               >
@@ -138,10 +139,10 @@ export default function Predictions() {
                 {/* Confronto e Placar Real */}
                 <div className="prediction-match-teams">
                   <div className="team-info">
-                    <img 
-                      src={match.teamACrest || 'https://flagcdn.com/w80/un.png'} 
-                      alt={match.teamA} 
-                      className="team-flag-mock" 
+                    <img
+                      src={match.teamACrest || 'https://flagcdn.com/w80/un.png'}
+                      alt={match.teamA}
+                      className="team-flag-mock"
                       style={{ width: '2.5rem', height: '1.6rem', objectFit: 'cover' }}
                     />
                     <span className="team-name" style={{ fontSize: '1rem' }}>{match.teamA}</span>
@@ -158,10 +159,10 @@ export default function Predictions() {
                   </div>
 
                   <div className="team-info">
-                    <img 
-                      src={match.teamBCrest || 'https://flagcdn.com/w80/un.png'} 
-                      alt={match.teamB} 
-                      className="team-flag-mock" 
+                    <img
+                      src={match.teamBCrest || 'https://flagcdn.com/w80/un.png'}
+                      alt={match.teamB}
+                      className="team-flag-mock"
                       style={{ width: '2.5rem', height: '1.6rem', objectFit: 'cover' }}
                     />
                     <span className="team-name" style={{ fontSize: '1rem' }}>{match.teamB}</span>
