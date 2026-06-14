@@ -5,12 +5,12 @@ import { Mail, Lock, User, LogIn, UserPlus } from 'lucide-react';
 export default function Login() {
   const { login, register } = useAuth();
   const [activeTab, setActiveTab] = useState('login'); // 'login' | 'register'
-  
+
   // Form States
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   // UI States
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');

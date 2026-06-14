@@ -13,16 +13,16 @@ async function seed() {
     // 1. Ler e executar o schema.sql para garantir que as tabelas existam
     const schemaPath = path.join(__dirname, 'schema.sql');
     const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-    
+
     console.log('Executando schema.sql...');
     await pool.query(schemaSql);
-    
+
     // Adiciona a migração caso o banco já tenha sido criado antes
     console.log('Executando migração de external_id e escudos...');
     await pool.query('ALTER TABLE matches ADD COLUMN IF NOT EXISTS external_id INT UNIQUE DEFAULT NULL;');
     await pool.query('ALTER TABLE matches ADD COLUMN IF NOT EXISTS team_a_crest VARCHAR(255) DEFAULT NULL;');
     await pool.query('ALTER TABLE matches ADD COLUMN IF NOT EXISTS team_b_crest VARCHAR(255) DEFAULT NULL;');
-    
+
     console.log('Tabelas criadas/verificadas com sucesso!');
 
     // 2. Verificar se já existem partidas cadastradas para evitar duplicação

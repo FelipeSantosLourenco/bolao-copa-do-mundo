@@ -70,6 +70,32 @@ export default function Bets() {
     fetchMatches();
   }, []);
 
+  useEffect(() => {
+    if (!loading && matches.length > 0) {
+      // Encontra a primeira partida que não está finalizada
+      const firstUpcoming = matches.find(m => m.status === 'scheduled');
+      if (firstUpcoming) {
+        const date = new Date(firstUpcoming.match_date_time);
+        const dateKey = date.toLocaleDateString('pt-BR', {
+          weekday: 'long',
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        });
+        const formattedDate = dateKey.charAt(0).toUpperCase() + dateKey.slice(1);
+        
+        // Timeout pequeno para garantir renderização do DOM
+        const timer = setTimeout(() => {
+          const element = document.getElementById(`date-group-${formattedDate}`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [loading, matches]);
+
   const handleInputChange = (matchId, team, value) => {
     // Apenas permite números
     if (value !== '' && !/^\d+$/.test(value)) return;
@@ -209,7 +235,7 @@ export default function Bets() {
         </div>
       ) : (
         Object.entries(groupedMatches).map(([dateStr, matchesList]) => (
-          <div key={dateStr} className="date-group">
+          <div key={dateStr} id={`date-group-${dateStr}`} className="date-group">
             <h3 className="date-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Calendar size={18} />
