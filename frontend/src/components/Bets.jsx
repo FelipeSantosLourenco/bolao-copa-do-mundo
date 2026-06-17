@@ -296,10 +296,13 @@ export default function Bets() {
                 return (
                   <div key={match.id} className={`glass-card match-card ${statusInfo.class}`}>
                     <div className="match-info-top">
-                      <span className={`match-status-pill ${statusInfo.class}`}>
-                        {statusInfo.locked ? <Lock size={12} /> : <Clock size={12} />}
-                        {statusInfo.label}
-                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span className="match-id-badge">#{match.id}</span>
+                        <span className={`match-status-pill ${statusInfo.class}`}>
+                          {statusInfo.locked ? <Lock size={12} /> : <Clock size={12} />}
+                          {statusInfo.label}
+                        </span>
+                      </div>
                       <span className="match-time">
                         <Clock size={12} />
                         Horário: {formatTime(match.match_date_time)}

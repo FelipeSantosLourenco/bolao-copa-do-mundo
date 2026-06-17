@@ -650,6 +650,19 @@ body {
   margin-bottom: 1.25rem;
 }
 
+.match-id-badge {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--warning);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+}
+
 .match-status-pill {
   padding: 0.25rem 0.6rem;
   border-radius: 50px;

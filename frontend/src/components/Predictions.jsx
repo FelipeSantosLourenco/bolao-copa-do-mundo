@@ -126,10 +126,13 @@ export default function Predictions() {
               >
                 {/* Cabeçalho do Card da Partida */}
                 <div className="prediction-match-header">
-                  <span className={`match-status-pill ${statusClass}`}>
-                    {match.isLocked ? <Lock size={12} /> : <Clock size={12} />}
-                    {statusLabel}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span className="match-id-badge">#{match.id}</span>
+                    <span className={`match-status-pill ${statusClass}`}>
+                      {match.isLocked ? <Lock size={12} /> : <Clock size={12} />}
+                      {statusLabel}
+                    </span>
+                  </div>
                   <span className="match-time" style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
                     <Calendar size={12} style={{ marginRight: '0.25rem' }} />
                     {formatDateTime(match.matchDateTime)}
