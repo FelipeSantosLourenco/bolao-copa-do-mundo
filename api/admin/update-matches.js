@@ -192,8 +192,24 @@ export default async function handler(req, res) {
         const isFinished = apiMatch.status === 'FINISHED';
         const dbStatus = isFinished ? 'finished' : 'scheduled';
 
-        const scoreA = isFinished ? apiMatch.score.fullTime.home : null;
-        const scoreB = isFinished ? apiMatch.score.fullTime.away : null;
+        let scoreA = null;
+        let scoreB = null;
+
+        if (isFinished) {
+          const ft = apiMatch.score?.fullTime;
+          const pen = apiMatch.score?.penalties;
+          const duration = apiMatch.score?.duration;
+
+          if (duration === 'PENALTY_SHOOTOUT' && pen) {
+            // Se foi decidida por pênaltis, subtrai as cobranças de pênaltis do placar total (fullTime)
+            // para obter o placar ao final da prorrogação (120 minutos)
+            scoreA = (ft?.home ?? 0) - (pen?.home ?? 0);
+            scoreB = (ft?.away ?? 0) - (pen?.away ?? 0);
+          } else {
+            scoreA = ft?.home;
+            scoreB = ft?.away;
+          }
+        }
 
         // Links de imagens das bandeiras oficiais retornados pela API
         const teamACrest = apiMatch.homeTeam?.crest || null;
