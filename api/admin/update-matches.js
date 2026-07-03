@@ -195,10 +195,19 @@ export default async function handler(req, res) {
         let scoreA = null;
         let scoreB = null;
 
-        if (isFinished) {
-          const ft = apiMatch.score?.fullTime;
-          scoreA = ft?.home;
-          scoreB = ft?.away;
+        if (isFinished && apiMatch.score) {
+          const reg = apiMatch.score.regularTime;
+          const ext = apiMatch.score.extraTime;
+          
+          if (reg && reg.home !== null && reg.home !== undefined) {
+            // Se temos regularTime, somamos tempo normal e prorrogação (desconsiderando pênaltis)
+            scoreA = (reg.home || 0) + (ext?.home || 0);
+            scoreB = (reg.away || 0) + (ext?.away || 0);
+          } else {
+            // Fallback para fullTime (usado em mocks ou dados sem regularTime)
+            scoreA = apiMatch.score.fullTime?.home;
+            scoreB = apiMatch.score.fullTime?.away;
+          }
         }
 
         // Links de imagens das bandeiras oficiais retornados pela API
