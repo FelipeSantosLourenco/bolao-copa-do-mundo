@@ -7,17 +7,13 @@ async function test() {
     const data = await response.json();
     const matches = data.matches || [];
     
-    const target = matches.find(m => 
-      (m.homeTeam?.name?.includes('Australia') || m.awayTeam?.name?.includes('Australia')) &&
-      (m.homeTeam?.name?.includes('Egypt') || m.awayTeam?.name?.includes('Egypt'))
-    );
+    const target = matches.find(m => m.id === 537378);
     
     if (target) {
-      console.log('PARTIDA ENCONTRADA:');
+      console.log('PARTIDA NA API:');
       console.log(JSON.stringify(target, null, 2));
     } else {
-      console.log('Partida Austrália x Egito não encontrada nos dados retornados.');
-      console.log('Primeiras 3 partidas:', JSON.stringify(matches.slice(0, 3), null, 2));
+      console.log('Partida externa 537378 não encontrada nos dados retornados.');
     }
   } catch (err) {
     console.error('Erro:', err);

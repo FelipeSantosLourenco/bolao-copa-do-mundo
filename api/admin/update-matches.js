@@ -189,7 +189,12 @@ export default async function handler(req, res) {
         const teamB = translateTeam(rawTeamB);
         const matchDateTime = apiMatch.utcDate;
 
-        const isFinished = apiMatch.status === 'FINISHED';
+        const isFinished = 
+          apiMatch.status === 'FINISHED' || 
+          (apiMatch.status !== 'IN_PLAY' && 
+           apiMatch.status !== 'PAUSED' && 
+           apiMatch.score?.fullTime?.home !== null && 
+           apiMatch.score?.fullTime?.home !== undefined);
         const dbStatus = isFinished ? 'finished' : 'scheduled';
 
         let scoreA = null;
